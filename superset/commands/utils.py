@@ -25,7 +25,6 @@ from superset.commands.exceptions import (
     OwnersNotFoundValidationError,
     RolesNotFoundValidationError,
 )
-from superset.datasource.dao import DatasourceDAO
 from superset.datasets.commands.exceptions import DatasetNotFoundError
 from superset.extensions import db, security_manager
 
@@ -79,6 +78,8 @@ def populate_roles(role_ids: Optional[List[int]] = None) -> List[Role]:
 
 def get_datasource_by_id(datasource_id: int, datasource_type: str) -> BaseDatasource:
     try:
+        from superset.datasource.dao import DatasourceDAO
+
         return DatasourceDAO.get_datasource(datasource_type, datasource_id, db.session)
     except DatasetNotFoundError as ex:
         raise DatasourceNotFoundValidationError() from ex

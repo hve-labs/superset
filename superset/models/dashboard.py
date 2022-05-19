@@ -47,7 +47,6 @@ from sqlalchemy.sql import join, select
 from sqlalchemy.sql.elements import BinaryExpression
 
 from superset import app, ConnectorRegistry, db, is_feature_enabled, security_manager
-from superset.datasource.dao import DatasourceDAO
 from superset.common.request_contexed_based import is_user_admin
 from superset.connectors.base.models import BaseDatasource
 from superset.connectors.sqla.models import SqlMetric, TableColumn
@@ -408,7 +407,7 @@ class Dashboard(Model, AuditMixinNullable, ImportExportMixin):
                     id_ = target.get("datasetId")
                     if id_ is None:
                         continue
-                    #todo(phillip): get datasource type for this method
+                    # todo(phillip): get datasource type for this method
                     datasource = ConnectorRegistry.get_datasource_by_id(session, id_)
                     datasource_ids.add((datasource.id, datasource.type))
 
@@ -417,6 +416,8 @@ class Dashboard(Model, AuditMixinNullable, ImportExportMixin):
 
         eager_datasources = []
         for datasource_id, datasource_type in datasource_ids:
+            from superset.datasource.dao import DatasourceDAO
+
             eager_datasource = DatasourceDAO.get_eager_datasource(
                 db.session, datasource_type, datasource_id
             )
